@@ -13,3 +13,21 @@ Honeypot/
 ├── README.md
 └── requirements.txt
 ```
+# Features 
+1. TCP Port listner 
+2. connection Logging
+3. Fake Service Banners 
+4. Real-time GUI
+5. Multi-threaded
+6. Start/Stop control 
+
+# Requirements
+Python 3.6
+
+# legal Disclamer 
+WARNING: This project is for educational purposes only.
+
+Only run this honeypot on systems you own or have explicit permission to test
+Running a honeypot on a public network may violate laws or regulations in your jurisdiction
+This is a basic demonstration and not a production-ready honeypot
+The authors are not responsible for any misuse or damage caused by this software
