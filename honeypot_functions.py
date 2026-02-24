@@ -61,3 +61,10 @@ def start_honeypot(port, stop_event):
         logger.error(f"Honeypot server error: {e}")
     finally:
         logger.info("Honeypot server stopped.")
+
+
+def create_honeypot_thread(port, stop_event):
+    """Convenience wrapper – returns a started daemon thread."""
+    t = threading.Thread(target=start_honeypot, args=(port, stop_event), daemon=True)
+    t.start()
+    return t
