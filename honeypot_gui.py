@@ -64,3 +64,9 @@ class HoneypotGUI:
         self.btn_start.config(state=tk.DISABLED)
         self.btn_stop.config(state=tk.NORMAL)
         self.port_entry.config(state=tk.DISABLED)
+
+def launch_gui(log_callback):
+    """Entry point for the GUI."""
+    root = tk.Tk()
+    gui = HoneypotGUI(root, log_callback)
+    root.mainloop()
