@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+"""
+honeypot_functions.py – Core honeypot logic.
+"""
+
 import socket
 import threading
 import logging
@@ -61,7 +66,6 @@ def start_honeypot(port, stop_event):
         logger.error(f"Honeypot server error: {e}")
     finally:
         logger.info("Honeypot server stopped.")
-
 
 def create_honeypot_thread(port, stop_event):
     """Convenience wrapper – returns a started daemon thread."""

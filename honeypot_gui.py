@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 import tkinter as tk
 from tkinter import scrolledtext, messagebox
@@ -10,10 +11,10 @@ class HoneypotGUI:
         self.master.title("Basic Honeypot Control")
         self.master.geometry("600x400")
 
-        
+        # Register this GUI with the callback
         self.log_callback.gui_ref = self
 
-        
+        # UI Widgets
         frame = tk.Frame(master)
         frame.pack(pady=5)
         
@@ -30,11 +31,10 @@ class HoneypotGUI:
         self.log_area = scrolledtext.ScrolledText(master, wrap=tk.WORD, state=tk.DISABLED)
         self.log_area.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 
-        
+        # Internal state
         self.stop_event = threading.Event()
         self.honeypot_thread = None
-    
-    
+
     def append_log(self, message):
         """Thread‑safe way to insert a line into the text widget."""
         self.log_area.after(0, self._do_append_log, message)
@@ -64,6 +64,13 @@ class HoneypotGUI:
         self.btn_start.config(state=tk.DISABLED)
         self.btn_stop.config(state=tk.NORMAL)
         self.port_entry.config(state=tk.DISABLED)
+
+    def stop_honeypot(self):
+        """Signal the server thread to exit."""
+        self.stop_event.set()
+        self.btn_start.config(state=tk.NORMAL)
+        self.btn_stop.config(state=tk.DISABLED)
+        self.port_entry.config(state=tk.NORMAL)
 
 def launch_gui(log_callback):
     """Entry point for the GUI."""
