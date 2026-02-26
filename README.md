@@ -13,6 +13,19 @@ Honeypot/
 ├── README.md
 └── requirements.txt
 ```
+# Quick start
+```text
+# clone the repo
+git clone https://github.com/Prabesh-collab/Honeypot.git 
+cd Honeypot
+
+# install the requirements
+ pip install -r requirements.txt
+
+# run the application
+python honeypot_main.py
+```
+
 # Features 
 1. TCP Port listner 
 2. connection Logging
@@ -21,8 +34,6 @@ Honeypot/
 5. Multi-threaded
 6. Start/Stop control 
 
-# Requirements
-Python 3.6
 
 # legal Disclamer 
 WARNING: This project is for educational purposes only.
