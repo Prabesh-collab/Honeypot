@@ -32,3 +32,30 @@ def main():
 
 if __name__ == "__main__":
     main()
+    #!/usr/bin/env python3
+import socket
+import threading
+import logging
+
+# Ports to listen on
+LISTEN_PORTS = [21, 22, 23, 8080]
+
+def start_honeypot(port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("0.0.0.0", port))
+    s.listen(5)
+    logging.info(f"Honeypot listening on port {port}")
+    while True:
+        conn, addr = s.accept()
+        data = conn.recv(1024).decode("utf-8", errors="ignore")
+        logging.info(f"Data from {addr} on port {port}: {data}")
+        conn.close()
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    for port in LISTEN_PORTS:
+        threading.Thread(target=start_honeypot, args=(port,), daemon=True).start()
+
+    # Keep the main thread alive
+    while True:
+        pass
