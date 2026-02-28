@@ -1,8 +1,79 @@
 #!/usr/bin/env python3
-
-import tkinter as tk
-from tkinter import scrolledtext, messagebox
+#!/usr/bin/env python3
+import socket
 import threading
+import logging
+import tkinter as tk
+from tkinter import messagebox, scrolledtext
+
+# Ports to use when "all" is selected
+DEFAULT_PORTS = [21, 22, 23, 8080]
+
+def start_honeypot(port, stop_event):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.bind(("0.0.0.0", port))
+        s.listen(5)
+        logging.info(f"Honeypot listening on port {port}")
+        while not stop_event.is_set():
+            try:
+                conn, addr = s.accept()
+                data = conn.recv(1024).decode("utf-8", errors="ignore")
+                logging.info(f"Data from {addr} on port {port}: {data}")
+                conn.close()
+            except Exception as e:
+                logging.error(f"Error on port {port}: {e}")
+    except Exception as e:
+        logging.error(f"Failed to bind port {port}: {e}")
+    finally:
+        s.close()
+
+def start_honeypot_gui():
+    port_input = port_entry.get().strip()
+    if port_input.lower() == "all":
+        ports = DEFAULT_PORTS
+    else:
+        try:
+            ports = [int(port_input)]
+        except ValueError:
+            messagebox.showerror("Invalid Port", "Please enter a number or 'all'")
+            return
+
+    global stop_event
+    stop_event = threading.Event()
+
+    for port in ports:
+        threading.Thread(target=start_honeypot, args=(port, stop_event), daemon=True).start()
+
+    start_button.config(state=tk.DISABLED)
+    stop_button.config(state=tk.NORMAL)
+
+def stop_honeypot_gui():
+    if stop_event:
+        stop_event.set()
+        logging.info("Honeypot stopped.")
+    start_button.config(state=tk.NORMAL)
+    stop_button.config(state=tk.DISABLED)
+
+# GUI setup
+root = tk.Tk()
+root.title("Basic Honeypot Control")
+
+logging.basicConfig(level=logging.INFO)
+
+tk.Label(root, text="Port to listen on:").pack()
+port_entry = tk.Entry(root)
+port_entry.pack()
+
+start_button = tk.Button(root, text="Start Honeypot", command=start_honeypot_gui)
+start_button.pack()
+
+stop_button = tk.Button(root, text="Stop", command=stop_honeypot_gui, state=tk.DISABLED)
+stop_button.pack()
+
+stop_event = None
+
+root.mainloop()
 
 class HoneypotGUI:
     def __init__(self, master, log_callback):
@@ -78,8 +149,3 @@ def launch_gui(log_callback):
     gui = HoneypotGUI(root, log_callback)
     root.mainloop()
 
-port_input = port_entry.get()
-if port_input.lower() == "all":
-    ports = [21, 22, 23, 8080]
-else:
-    ports = [int(port_input)]
