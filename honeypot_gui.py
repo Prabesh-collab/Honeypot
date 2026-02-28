@@ -77,3 +77,9 @@ def launch_gui(log_callback):
     root = tk.Tk()
     gui = HoneypotGUI(root, log_callback)
     root.mainloop()
+
+port_input = port_entry.get()
+if port_input.lower() == "all":
+    ports = [21, 22, 23, 8080]
+else:
+    ports = [int(port_input)]
